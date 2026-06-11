@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Healthsperien — Washington, CT</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%96%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<meta name="description" content="A Washington practice designed around patients: easy scheduling, unhurried visits, and clear answers.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream:#f6f2e9; --cream-2:#efe9da; --ink:#1c2533; --ink-soft:#3e4759;
+    --muted:#6d7686; --sage:#5d6878; --gold:#b08d3e; --gold-deep:#8e6f2c;
+    --line:rgba(28,37,51,.14); --dark:#131b29; --dark-ink:#eef1f6;
+    --serif:'Fraunces', Georgia, serif; --sans:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html { scroll-behavior:auto; }
+  html.lenis, html.lenis body { height:auto; }
+  .lenis.lenis-smooth { scroll-behavior:auto !important; }
+  body {
+    font:16px/1.7 var(--sans); background:var(--cream); color:var(--ink);
+    -webkit-font-smoothing:antialiased; overflow-x:hidden;
+  }
+  ::selection { background:var(--gold); color:#fff; }
+  img, video { display:block; max-width:100%; }
+  a { color:inherit; }
+  .wrap { width:min(1240px, calc(100% - 48px)); margin:0 auto; }
+
+  /* ---------- fixed chrome ---------- */
+  .ribbon { position:fixed; bottom:22px; left:-52px; transform:rotate(38deg); z-index:96;
+    background:#111; color:#fff; font:600 10.5px/1 var(--sans); letter-spacing:.14em;
+    text-transform:uppercase; padding:7px 56px; opacity:.85; pointer-events:none; }
+  #progress { position:fixed; top:0; left:0; right:0; height:2px; z-index:99;
+    background:var(--gold); transform:scaleX(0); transform-origin:0 50%; }
+  .grain { position:fixed; inset:-50%; z-index:95; pointer-events:none; opacity:.045;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    animation:grain 9s steps(8) infinite; }
+  @keyframes grain { 0%,100%{transform:translate(0,0)} 25%{transform:translate(-3%,2%)} 50%{transform:translate(2%,-3%)} 75%{transform:translate(-2%,-2%)} }
+
+  /* cursor */
+  .cursor-dot, .cursor-ring { position:fixed; top:0; left:0; z-index:98; pointer-events:none;
+    border-radius:50%; transform:translate(-50%,-50%); }
+  .cursor-dot { width:6px; height:6px; background:var(--gold); }
+  .cursor-ring { width:34px; height:34px; border:1px solid rgba(176,141,62,.55);
+    transition:width .25s, height .25s, border-color .25s, background .25s; }
+  .cursor-ring.is-active { width:62px; height:62px; background:rgba(176,141,62,.12); border-color:rgba(176,141,62,.9); }
+  @media (hover:none), (pointer:coarse) { .cursor-dot, .cursor-ring { display:none; } }
+
+  /* ---------- nav ---------- */
+  nav { position:fixed; top:0; left:0; right:0; z-index:90; transition:background .3s, box-shadow .3s, color .3s; color:var(--dark-ink); }
+  nav .wrap { display:flex; align-items:center; height:72px; gap:14px; }
+  .brand { display:flex; align-items:center; gap:11px; text-decoration:none; font-family:var(--serif); font-weight:500; font-size:18px; letter-spacing:.01em; }
+  .brand .mark { width:34px; height:34px; flex:none; border-radius:50%; border:1px solid currentColor;
+    display:grid; place-items:center; font-size:15px; }
+  nav .spacer { flex:1; }
+  nav .links a { text-decoration:none; font-size:13.5px; font-weight:500; margin-left:26px; opacity:.85; transition:opacity .2s; }
+  nav .links a:hover { opacity:1; }
+  nav a.cta { background:var(--gold); color:#fff; padding:10px 20px; border-radius:99px; opacity:1; font-weight:600; }
+  nav a.cta:hover { background:var(--gold-deep); }
+  nav.solid { background:rgba(246,242,233,.9); backdrop-filter:blur(12px); color:var(--ink); box-shadow:0 1px 0 var(--line); }
+  @media (max-width:720px){ nav .links a:not(.cta){ display:none; } }
+
+  /* ---------- hero ---------- */
+  .hero { position:relative; height:100vh; height:100svh; overflow:hidden; display:flex; align-items:flex-end; color:var(--dark-ink); }
+  .hero-media { position:absolute; inset:0; will-change:transform; }
+  .hero-media video, .hero-media img { width:100%; height:100%; object-fit:cover; transform:scale(1.07); }
+  .hero-shade { position:absolute; inset:0;
+    background:linear-gradient(180deg, rgba(10,15,24,.42) 0%, rgba(10,15,24,.10) 38%, rgba(10,15,24,.62) 100%); }
+  .hero-inner { position:relative; padding-bottom:9vh; }
+  .hero .kicker { display:inline-flex; align-items:center; gap:12px; font-size:12px; font-weight:600;
+    letter-spacing:.22em; text-transform:uppercase; opacity:0; margin-bottom:26px; }
+  .hero .kicker::before { content:""; width:34px; height:1px; background:currentColor; }
+  .hero h1 { font-family:var(--serif); font-weight:380; font-size:clamp(52px, 9.2vw, 132px);
+    line-height:.98; letter-spacing:-.015em; max-width:12ch; }
+  .hero h1 .line { display:block; overflow:hidden; }
+  .hero h1 .line > span { display:inline-block; transform:translateY(112%); }
+  .hero h1 em { font-style:italic; color:#d9b36c; }
+  .hero .sub { max-width:46ch; margin-top:28px; font-size:clamp(15px,1.6vw,18px); line-height:1.65; opacity:0; }
+  .hero .actions { display:flex; gap:14px; flex-wrap:wrap; margin-top:36px; opacity:0; }
+  .btn { display:inline-block; text-decoration:none; font-weight:600; font-size:15px;
+    padding:16px 32px; border-radius:99px; transition:transform .2s, background .2s, color .2s; }
+  .btn:hover { transform:translateY(-2px); }
+  .btn.primary { background:var(--gold); color:#fff; }
+  .btn.primary:hover { background:var(--gold-deep); }
+  .btn.ghost { border:1px solid rgba(238,241,246,.45); color:var(--dark-ink); }
+  .btn.ghost:hover { border-color:var(--dark-ink); }
+  .scrollcue { position:absolute; bottom:30px; right:max(24px, calc((100vw - 1240px)/2)); display:flex; align-items:center; gap:10px;
+    font-size:10.5px; letter-spacing:.22em; text-transform:uppercase; opacity:.65; }
+  .scrollcue::after { content:""; width:1px; height:42px; background:currentColor;
+    animation:cue 1.8s ease-in-out infinite; transform-origin:top; }
+  @keyframes cue { 0%{transform:scaleY(0)} 55%{transform:scaleY(1)} 100%{transform:scaleY(1); opacity:0} }
+
+  /* ---------- marquee ---------- */
+  .marquee { background:var(--dark); color:var(--dark-ink); overflow:hidden; padding:20px 0;
+    transform:rotate(-1.1deg) scale(1.02); border-block:1px solid rgba(238,241,246,.12); }
+  .marquee-track { display:flex; width:max-content; gap:0; animation:marquee 28s linear infinite; }
+  .marquee span { font-family:var(--serif); font-weight:400; font-size:20px; white-space:nowrap; padding-right:18px; letter-spacing:.02em; }
+  .marquee i { font-style:normal; color:var(--gold); padding-right:18px; }
+  @keyframes marquee { to { transform:translateX(-50%); } }
+
+  section { position:relative; }
+  .kick { font-size:11.5px; font-weight:600; letter-spacing:.24em; text-transform:uppercase; color:var(--gold-deep);
+    display:flex; align-items:center; gap:12px; margin-bottom:22px; }
+  .kick::before { content:""; width:30px; height:1px; background:currentColor; }
+
+  /* ---------- philosophy ---------- */
+  .philosophy { background:var(--cream); padding:1px 0; }
+  .philosophy .inner { min-height:100vh; display:flex; flex-direction:column; justify-content:center; padding:14vh 0; }
+  .philosophy p.big { font-family:var(--serif); font-weight:380; font-size:clamp(30px,4.6vw,62px);
+    line-height:1.22; letter-spacing:-.01em; max-width:24ch; }
+  .philosophy p.big .w { opacity:.12; display:inline-block; }
+  .philosophy p.big em { font-style:italic; color:var(--gold-deep); }
+  .philosophy .sig { margin-top:42px; font-size:14px; color:var(--muted); display:flex; align-items:center; gap:14px; }
+  .philosophy .sig::before { content:""; width:44px; height:1px; background:var(--gold); }
+
+  /* ---------- services (horizontal) ---------- */
+  .services { background:var(--dark); color:var(--dark-ink); }
+  .services .head { padding:13vh 0 6vh; display:flex; align-items:flex-end; justify-content:space-between; gap:30px; flex-wrap:wrap; }
+  .services h2 { font-family:var(--serif); font-weight:380; font-size:clamp(38px,5.4vw,76px); letter-spacing:-.015em; line-height:1.02; }
+  .services .head p { max-width:36ch; color:rgba(238,241,246,.66); font-size:15.5px; }
+  .h-stage { overflow:hidden; }
+  .h-track { display:flex; gap:clamp(20px,3vw,44px); padding:0 max(24px, calc((100vw - 1240px)/2)) 13vh; width:max-content; align-items:stretch; }
+  .panel { width:min(78vw, 560px); flex:none; background:#1a2336; border:1px solid rgba(238,241,246,.1);
+    border-radius:20px; overflow:hidden; display:flex; flex-direction:column; }
+  .panel .ph { position:relative; aspect-ratio:4/3.1; overflow:hidden; }
+  .panel .ph img { width:108%; height:108%; max-width:108%; object-fit:cover; will-change:transform; }
+  .panel .num { position:absolute; top:18px; left:20px; font-family:var(--serif); font-size:15px; color:#fff;
+    background:rgba(19,27,41,.55); backdrop-filter:blur(6px); border:1px solid rgba(255,255,255,.25);
+    width:44px; height:44px; border-radius:50%; display:grid; place-items:center; }
+  .panel .pb { padding:30px 30px 34px; display:flex; flex-direction:column; gap:14px; flex:1; }
+  .panel h3 { font-family:var(--serif); font-weight:430; font-size:clamp(24px,2.4vw,31px); letter-spacing:-.01em; }
+  .panel p { color:rgba(238,241,246,.68); font-size:15px; }
+  .tags { display:flex; flex-wrap:wrap; gap:8px; margin-top:auto; padding-top:10px; }
+  .tags span { font-size:12px; font-weight:500; letter-spacing:.04em; padding:7px 14px; border-radius:99px;
+    border:1px solid rgba(238,241,246,.22); color:rgba(238,241,246,.8); }
+  .h-hint { display:none; }
+  @media (min-width:901px){
+    .h-hint { display:flex; align-items:center; gap:10px; font-size:11px; letter-spacing:.2em; text-transform:uppercase; color:rgba(238,241,246,.5); }
+    .h-hint::after { content:"⟶"; font-size:15px; }
+  }
+  @media (max-width:900px){
+    .h-track { flex-direction:column; width:auto; padding:0 24px 80px; }
+    .panel { width:100%; }
+  }
+
+  /* ---------- quote band ---------- */
+  .band { position:relative; height:118vh; overflow:hidden; display:grid; place-items:center; color:#fff; text-align:center; }
+  .band .bg { position:absolute; inset:-14% 0; will-change:transform; }
+  .band .bg img { width:100%; height:100%; object-fit:cover; }
+  .band::after { content:""; position:absolute; inset:0; background:rgba(13,19,30,.5); }
+  .band .q { position:relative; z-index:2; width:min(900px, calc(100% - 48px)); }
+  .band .q p { font-family:var(--serif); font-weight:380; font-size:clamp(30px,4.4vw,58px); line-height:1.18; letter-spacing:-.01em; }
+  .band .q em { font-style:italic; color:#d9b36c; }
+  .band .q .who { margin-top:26px; font-size:12px; letter-spacing:.22em; text-transform:uppercase; opacity:.75; }
+
+  /* ---------- steps ---------- */
+  .steps { background:var(--cream); padding:15vh 0 14vh; }
+  .steps h2 { font-family:var(--serif); font-weight:380; font-size:clamp(36px,4.8vw,68px); letter-spacing:-.015em; max-width:14ch; line-height:1.04; }
+  .steps-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:clamp(22px,3vw,40px); margin-top:64px; }
+  .step { border-top:1px solid var(--ink); padding-top:26px; }
+  .step .n { font-family:var(--serif); font-style:italic; font-size:15px; color:var(--gold-deep); }
+  .step h3 { font-family:var(--serif); font-weight:480; font-size:24px; margin:12px 0 10px; }
+  .step p { color:var(--ink-soft); font-size:15px; max-width:34ch; }
+  @media (max-width:820px){ .steps-grid { grid-template-columns:1fr; } }
+
+  /* ---------- visit ---------- */
+  .visit { background:var(--dark); color:var(--dark-ink); padding:14vh 0; }
+  .visit .grid { display:grid; grid-template-columns:1.05fr .95fr; gap:clamp(30px,5vw,80px); align-items:center; }
+  .visit h2 { font-family:var(--serif); font-weight:380; font-size:clamp(38px,5vw,72px); line-height:1.03; letter-spacing:-.015em; }
+  .visit h2 em { font-style:italic; color:#d9b36c; }
+  .visit p.lead { margin-top:22px; color:rgba(238,241,246,.7); max-width:44ch; }
+  .visit .card { background:#1a2336; border:1px solid rgba(238,241,246,.12); border-radius:20px; padding:38px; }
+  .visit .row { display:flex; justify-content:space-between; gap:18px; padding:16px 0; border-bottom:1px solid rgba(238,241,246,.1); font-size:15px; }
+  .visit .row:first-child { padding-top:0; }
+  .visit .row .k { color:rgba(238,241,246,.55); }
+  .visit .row .v { text-align:right; font-weight:500; }
+  .visit .card .btn { width:100%; text-align:center; margin-top:28px; }
+  .visit .photo { margin-top:26px; border-radius:16px; overflow:hidden; aspect-ratio:16/8; }
+  .visit .photo img { width:100%; height:100%; object-fit:cover; }
+  @media (max-width:900px){ .visit .grid { grid-template-columns:1fr; } }
+
+  footer { background:var(--dark); color:rgba(238,241,246,.5); padding:0 0 46px; font-size:13px; }
+  footer .wrap { border-top:1px solid rgba(238,241,246,.1); padding-top:30px; display:flex; flex-direction:column; gap:8px; }
+  footer .credit { font-size:12px; opacity:.75; }
+
+  [data-reveal] { opacity:0; transform:translateY(34px); }
+  .no-motion [data-reveal], .no-motion .hero .kicker, .no-motion .hero .sub, .no-motion .hero .actions { opacity:1 !important; transform:none !important; }
+  .no-motion .hero h1 .line > span { transform:none; }
+  .no-motion .philosophy p.big .w { opacity:1; }
+  .no-motion .marquee-track { animation:none; }
+  .no-motion .grain { animation:none; }
+  .no-motion .scrollcue::after { animation:none; }
+</style>
+</head>
+<body>
+
+<div id="progress"></div>
+<div class="ribbon">Concept preview</div>
+<div class="grain" aria-hidden="true"></div>
+<div class="cursor-ring" aria-hidden="true"></div>
+<div class="cursor-dot" aria-hidden="true"></div>
+
+<nav id="nav">
+  <div class="wrap">
+    <a class="brand" href="#top"><span class="mark">H</span>Healthsperien</a>
+    <div class="spacer"></div>
+    <div class="links">
+      <a href="#services">Services</a>
+      <a href="#how">How it works</a>
+      <a href="#visit">Contact</a>
+      <a class="cta" href="mailto:wobrien@healthsperien.com">Get in touch</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="hero-media" id="heroMedia">
+    <video id="heroVideo" autoplay muted loop playsinline preload="auto" poster="assets/hero.jpg">
+      <source src="assets/hero.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="hero-shade"></div>
+  <div class="wrap hero-inner">
+    <p class="kicker">Patient Care · Washington, CT</p>
+    <h1 aria-label="Counsel you can actually reach.">
+      <span class="line"><span>Care that starts on</span></span>
+      <span class="line"><span><em>time.</em></span></span>
+    </h1>
+    <p class="sub">A Washington practice designed around patients: easy scheduling, unhurried visits, and clear answers.</p>
+    <div class="actions">
+      <a class="btn primary" href="mailto:wobrien@healthsperien.com">Get in touch</a>
+      <a class="btn ghost" href="#services">Explore services</a>
+    </div>
+  </div>
+  <div class="scrollcue">Scroll</div>
+</header>
+
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track" id="marqueeTrack">
+    <span>New patient visits <i>·</i> Ongoing care <i>·</i> Telehealth <i>·</i> Same-week scheduling <i>·</i> Patient Care <i>·</i> </span><span>New patient visits <i>·</i> Ongoing care <i>·</i> Telehealth <i>·</i> Same-week scheduling <i>·</i> Patient Care <i>·</i> </span>
+  </div>
+</div>
+
+<section class="philosophy">
+  <div class="wrap inner" id="philoPin">
+    <p class="kick">Our philosophy</p>
+    <p class="big" id="philoText">Healthcare works when someone listens first. Appointments here start on time, last as long as they need to, and end with you understanding the plan.</p>
+    <p class="sig">Healthsperien</p>
+  </div>
+</section>
+
+<section class="services" id="services">
+  <div class="wrap head">
+    <div>
+      <p class="kick" style="color:#d9b36c;">What we do</p>
+      <h2>Your health questions deserve answers this week.</h2>
+    </div>
+    <div>
+      <p>New patients welcome — booking takes two minutes.</p>
+      <p class="h-hint" style="margin-top:18px;">Keep scrolling</p>
+    </div>
+  </div>
+  <div class="h-stage" id="hStage">
+    <div class="h-track" id="hTrack">
+      <article class="panel">
+        <div class="ph"><img src="assets/hands.jpg" alt="Signing an agreement with a fountain pen"><span class="num">01</span></div>
+        <div class="pb">
+          <h3>New patient visits</h3>
+          <p>Thorough first appointments — history heard, plan explained.</p>
+          <div class="tags"><span>Drafting</span><span>Review</span><span>Negotiation</span></div>
+        </div>
+      </article>
+      <article class="panel">
+        <div class="ph"><img src="assets/soul.jpg" alt="Brass scales in warm lamp light"><span class="num">02</span></div>
+        <div class="pb">
+          <h3>Ongoing care</h3>
+          <p>Follow-ups and management that keep you on track.</p>
+          <div class="tags"><span>First consults</span><span>Plain English</span><span>Honest timelines</span></div>
+        </div>
+      </article>
+      <article class="panel">
+        <div class="ph"><img src="assets/place.jpg" alt="Shingled New England office on a quiet street"><span class="num">03</span></div>
+        <div class="pb">
+          <h3>Telehealth</h3>
+          <p>Care from home when coming in isn&#x27;t necessary.</p>
+          <div class="tags"><span>Formation</span><span>Disputes</span><span>Ongoing counsel</span></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="bg" id="bandBg"><img src="assets/journey.jpg" alt="Figure with a briefcase on a misty coastal lane at dusk"></div>
+  <div class="q" data-reveal>
+    <p>Same week — <em>appointments for new patients.</em></p>
+    <p class="who">What you can count on</p>
+  </div>
+</section>
+
+<section class="steps" id="how">
+  <div class="wrap">
+    <p class="kick">How it works</p>
+    <h2 data-reveal>Simple to start. Clear the whole way.</h2>
+    <div class="steps-grid">
+      <div class="step" data-reveal>
+        <span class="n">No. 1</span>
+        <h3>Book in minutes</h3>
+        <p>Online or by phone — real availability, this week.</p>
+      </div>
+      <div class="step" data-reveal>
+        <span class="n">No. 2</span>
+        <h3>Be heard</h3>
+        <p>Your visit starts with your story, not a stopwatch.</p>
+      </div>
+      <div class="step" data-reveal>
+        <span class="n">No. 3</span>
+        <h3>Leave with a plan</h3>
+        <p>Clear next steps, written down, with someone to call if questions come up.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="visit" id="visit">
+  <div class="wrap grid">
+    <div>
+      <p class="kick" style="color:#d9b36c;">Contact</p>
+      <h2 data-reveal>Ready when <em>you are.</em></h2>
+      <p class="lead" data-reveal>Based in Washington and serving the surrounding area — by appointment.</p>
+      <div class="photo" data-reveal><img src="assets/hero.jpg" alt="Law office study in warm afternoon light"></div>
+    </div>
+    <div class="card" data-reveal>
+      <div class="row"><span class="k">Office</span><span class="v">601 Massachusetts Avenue Northwest<br>WASHINGTON, DC, 20001</span></div>
+      <div class="row"><span class="k">Service area</span><span class="v">Washington and surrounding area</span></div>
+      <div class="row"><span class="k">Email</span><span class="v">wobrien@healthsperien.com</span></div>
+      <div class="row"><span class="k">Consultations</span><span class="v">By appointment</span></div>
+      <a class="btn primary" href="mailto:wobrien@healthsperien.com">Get in touch</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>© Healthsperien · Washington, CT</div>
+    <div class="credit">Concept draft prepared by Jonah — not a live website. Content shown is placeholder copy for review.</div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+<script>
+(function(){
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches || location.hash.indexOf('#static') === 0;
+  var hasGsap = typeof gsap !== 'undefined';
+  if (reduced || !hasGsap) {
+    document.body.classList.add('no-motion');
+    if (reduced) { var v = document.getElementById('heroVideo'); if (v) { v.removeAttribute('autoplay'); v.pause(); } }
+    document.getElementById('nav').classList.add('solid');
+    var ym = location.hash.match(/y=(\d+)/);
+    if (ym) addEventListener('load', function(){ window.scrollTo(0, +ym[1]); });
+    return;
+  }
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* smooth scroll */
+  var lenis = new Lenis({ lerp:0.1, smoothWheel:true });
+  lenis.on('scroll', ScrollTrigger.update);
+  gsap.ticker.add(function(t){ lenis.raf(t * 1000); });
+  gsap.ticker.lagSmoothing(0);
+
+  /* anchor links through lenis */
+  document.querySelectorAll('a[href^="#"]').forEach(function(a){
+    a.addEventListener('click', function(e){
+      var target = document.querySelector(a.getAttribute('href'));
+      if (target) { e.preventDefault(); lenis.scrollTo(target, { offset:0 }); }
+    });
+  });
+
+  /* progress bar + nav state */
+  gsap.to('#progress', { scaleX:1, ease:'none',
+    scrollTrigger:{ trigger:document.body, start:'top top', end:'max', scrub:0.3 } });
+  ScrollTrigger.create({ start:80, end:'max',
+    onToggle:function(self){ document.getElementById('nav').classList.toggle('solid', self.isActive); } });
+
+  /* hero intro */
+  var intro = gsap.timeline({ defaults:{ ease:'power3.out' } });
+  intro.to('.hero h1 .line > span', { y:0, duration:1.15, stagger:0.12 }, 0.15)
+       .to('.hero .kicker', { opacity:1, duration:.8 }, 0.5)
+       .to('.hero .sub',    { opacity:1, duration:.8 }, 0.7)
+       .to('.hero .actions',{ opacity:1, duration:.8 }, 0.85);
+
+  /* hero scroll: slow zoom + content drift */
+  gsap.to('#heroMedia', { scale:1.18, ease:'none',
+    scrollTrigger:{ trigger:'.hero', start:'top top', end:'bottom top', scrub:true } });
+  gsap.to('.hero-inner', { y:-90, opacity:0, ease:'none',
+    scrollTrigger:{ trigger:'.hero', start:'top top', end:'72% top', scrub:true } });
+
+  /* philosophy: pinned word-by-word reveal */
+  var philo = document.getElementById('philoText');
+  philo.innerHTML = philo.innerHTML.split(/(<em>.*?<\/em>)|\s+/g).filter(Boolean).map(function(part){
+    if (part.indexOf('<em>') === 0) return '<span class="w">' + part + '</span>';
+    return '<span class="w">' + part + '</span>';
+  }).join(' ');
+  gsap.to('#philoText .w', { opacity:1, stagger:0.6, ease:'none',
+    scrollTrigger:{ trigger:'#philoPin', start:'top top', end:'+=160%', pin:true, scrub:0.4 } });
+
+  /* horizontal services */
+  ScrollTrigger.matchMedia({
+    '(min-width: 901px)': function(){
+      var track = document.getElementById('hTrack');
+      var getX = function(){ return -(track.scrollWidth - window.innerWidth); };
+      gsap.to(track, { x:getX, ease:'none',
+        scrollTrigger:{ trigger:'#hStage', start:'top top', end:function(){ return '+=' + (-getX() * 1.05); },
+          pin:'.services', scrub:0.5, invalidateOnRefresh:true, anticipatePin:1 } });
+      /* inner image parallax against track motion */
+      document.querySelectorAll('.panel .ph img').forEach(function(img){
+        gsap.fromTo(img, { x:-22 }, { x:22, ease:'none',
+          scrollTrigger:{ trigger:'#hStage', start:'top top', end:function(){ return '+=' + (-getX() * 1.05); }, scrub:0.5 } });
+      });
+    },
+    '(max-width: 900px)': function(){
+      gsap.utils.toArray('.panel').forEach(function(p){
+        gsap.from(p, { y:50, opacity:0, duration:.9, ease:'power3.out',
+          scrollTrigger:{ trigger:p, start:'top 86%' } });
+      });
+    }
+  });
+
+  /* quote band parallax */
+  gsap.fromTo('#bandBg', { yPercent:-12 }, { yPercent:12, ease:'none',
+    scrollTrigger:{ trigger:'.band', start:'top bottom', end:'bottom top', scrub:true } });
+
+  /* generic reveals */
+  gsap.utils.toArray('[data-reveal]').forEach(function(el){
+    gsap.to(el, { opacity:1, y:0, duration:1, ease:'power3.out',
+      scrollTrigger:{ trigger:el, start:'top 84%' } });
+  });
+
+  /* cursor */
+  var dot = document.querySelector('.cursor-dot'), ring = document.querySelector('.cursor-ring');
+  var mx = innerWidth/2, my = innerHeight/2, rx = mx, ry = my;
+  addEventListener('mousemove', function(e){ mx = e.clientX; my = e.clientY;
+    dot.style.left = mx + 'px'; dot.style.top = my + 'px'; });
+  gsap.ticker.add(function(){ rx += (mx - rx) * .14; ry += (my - ry) * .14;
+    ring.style.left = rx + 'px'; ring.style.top = ry + 'px'; });
+  document.querySelectorAll('a, .panel').forEach(function(el){
+    el.addEventListener('mouseenter', function(){ ring.classList.add('is-active'); });
+    el.addEventListener('mouseleave', function(){ ring.classList.remove('is-active'); });
+  });
+
+  /* refresh after media loads (layout shift safety) */
+  addEventListener('load', function(){ ScrollTrigger.refresh(); });
+})();
+</script>
+</body>
+</html>
